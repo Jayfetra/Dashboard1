@@ -5,14 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dashboard1"
         mc:Ignorable="d"
-        Title="Data_input_window" Height="600" Width="800"
+        Title="Data_input_window" Height="680" Width="800"
         >
 
     <Grid Margin="10,0,10,10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition SharedSizeGroup="A" Width="150"/>
             <ColumnDefinition SharedSizeGroup="A" Width="200"/>
             <ColumnDefinition SharedSizeGroup="A" Width="200"/>
+            <ColumnDefinition SharedSizeGroup="A" Width="200"/>
+            <ColumnDefinition SharedSizeGroup="A" Width="200"/>
+
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -24,6 +26,9 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="220"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="Check Command:"/>
         
@@ -78,13 +83,41 @@
                 Width="200" HorizontalAlignment="Center"
                 Foreground="Black" Background="DimGray" Click="btn_MoistureAgg_click"/>
 
-        <DataGrid Height="200" Width="auto" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" 
+        
+        <DataGrid Height="200" Width="auto" Grid.Row="8" Grid.Column="0"  
                              Margin="0" Padding="0,10,0,0"
-                             Name="Data_Receive_Grid" VerticalAlignment="Top" Background="Transparent">
+                             Name="Data_Receive_Grid_1" VerticalAlignment="Top" Background="Transparent">
+
+        </DataGrid>
+        <DataGrid Height="200" Width="auto" Grid.Row="8" Grid.Column="1" 
+                             Margin="0" Padding="0,10,0,0"
+                             Name="Data_Receive_Grid_2" VerticalAlignment="Top" Background="Transparent">
+
+        </DataGrid>
+        <DataGrid Height="200" Width="auto" Grid.Row="8" Grid.Column="2"  
+                             Margin="0" Padding="0,10,0,0"
+                             Name="Data_Receive_Grid_3" VerticalAlignment="Top" Background="Transparent">
+
+        </DataGrid>
+        <DataGrid Height="200" Width="auto" Grid.Row="8" Grid.Column="3" 
+                             Margin="0" Padding="0,10,0,0"
+                             Name="Data_Receive_Grid_4" VerticalAlignment="Top" Background="Transparent">
 
         </DataGrid>
 
-
+        <TextBlock Grid.Row="9" Grid.Column="0" Name="Average_1" Text="Null"></TextBlock>
+        <TextBlock Grid.Row="9" Grid.Column="1" Name="Average_2" Text="Null"></TextBlock>
+        <TextBlock Grid.Row="9" Grid.Column="2" Name="Average_3" Text="Null"></TextBlock>
+        <TextBlock Grid.Row="9" Grid.Column="3" Name="Average_4" Text="Null"></TextBlock>
+        
+        
+        <Button Grid.Row="10" Grid.Column="0" Name="Button1_Baiz" Click="Button1_Baiz_Click" Width="100" HorizontalAlignment="Left"> Baiz 1 </Button>
+        <Button Grid.Row="10" Grid.Column="0" Name="Button5_Baiz" Click="Button5_Baiz_Click" Width="100" HorizontalAlignment="Right">Baiz 5</Button>
+        
+        <Button Grid.Row="10" Grid.Column="1" Name="Button2_Baiz" Click="Button2_Baiz_Click"> Baiz 2</Button>
+        <Button Grid.Row="10" Grid.Column="2" Name="Button3_Baiz" Click="Button3_Baiz_Click"> Baiz 3</Button>
+        <Button Grid.Row="10" Grid.Column="3" Name="Button4_Baiz" Click="Button4_Baiz_Click"> Baiz 4</Button>
+        
     </Grid>
 
 </Window>
