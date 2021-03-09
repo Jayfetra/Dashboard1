@@ -43,7 +43,7 @@ namespace Dashboard1
 
         static int BaudRate = int.Parse(((MainWindow)Application.Current.MainWindow).ComboBox_Input_Baud.Text);
         SerialPort mySerialPort = new SerialPort(comport);
-        int counter = 0;
+        int counter_data = 0;
 
         static string Folder_Path = ConfigurationManager.AppSettings["Folder_Path"] ?? "Not Found";
         static string application_name = ConfigurationManager.AppSettings["application_name"] ?? "Not Found";
@@ -53,13 +53,30 @@ namespace Dashboard1
         int TimeInterval;
         int NumberGrain;
         int NumberMeasure;
-        int NumberGrain_Frekuensi;
+        int NumberGrain_Frekuensi = -1;
 
         bool StatusListen = false;
 
         List<data_measure_2> data_finals_update = new List<data_measure_2> { };
         List<data_measure_2> data_finals_update_2 = new List<data_measure_2> { };
         List<data_measure_2> temp_data_finals_2 = new List<data_measure_2> { };
+
+        List<data_measure_2> data_Grid_1_list_a = new List<data_measure_2> { };
+        List<data_measure_2> data_Grid_1_list_b = new List<data_measure_2> { };
+
+        List<data_measure_2> data_Grid_2_list_a = new List<data_measure_2> { };
+        List<data_measure_2> data_Grid_2_list_b = new List<data_measure_2> { };
+
+        List<data_measure_2> data_Grid_3_list_a = new List<data_measure_2> { };
+        List<data_measure_2> data_Grid_3_list_b = new List<data_measure_2> { };
+        
+        List<data_measure_2> data_Grid_4_list_a = new List<data_measure_2> { };
+        List<data_measure_2> data_Grid_4_list_b = new List<data_measure_2> { };
+
+        List<data_measure_2> data_Grid_5_list_a = new List<data_measure_2> { };
+        List<data_measure_2> data_Grid_5_list_b = new List<data_measure_2> { };
+
+        List<data_measure_2> data_Average = new List<data_measure_2> { };
 
 
         List<Data_Measure> data_finals_ori = new List<Data_Measure> { };
@@ -84,9 +101,9 @@ namespace Dashboard1
         {
             ComboBox_TimeInterval.SelectedValuePath = "Key";
             ComboBox_TimeInterval.DisplayMemberPath = "Value";
-            ComboBox_TimeInterval.Items.Add(new KeyValuePair<int, string>(0, "3 sec"));
-            ComboBox_TimeInterval.Items.Add(new KeyValuePair<int, string>(1, "6 sec "));
-            ComboBox_TimeInterval.Items.Add(new KeyValuePair<int, string>(2, "9 sec"));
+            ComboBox_TimeInterval.Items.Add(new KeyValuePair<int, string>(0, "30 sec"));
+            ComboBox_TimeInterval.Items.Add(new KeyValuePair<int, string>(1, "60 sec "));
+            ComboBox_TimeInterval.Items.Add(new KeyValuePair<int, string>(2, "90 sec"));
 
 
             //
@@ -142,24 +159,26 @@ namespace Dashboard1
         public void RunSensor()
         {
 
-            int TimeInterval = ComboBox_TimeInterval.SelectedIndex;
+           
             int NumberGrain = ComboBox_NumberGrain.SelectedIndex;
             int NumberMeasure = ComboBox_NumberMeasure.SelectedIndex;
 
+
+            int TimeInterval = ComboBox_TimeInterval.SelectedIndex;
             int delay;
             switch (TimeInterval)
             {
                 default:
-                    delay = 3000;
+                    delay = 30000;
                     break;
                 case 0:
-                    delay = 3000;
+                    delay = 30000;
                     break;
                 case 1:
-                    delay = 6000;
+                    delay = 60000;
                     break;
                 case 2:
-                    delay = 9000;
+                    delay = 90000;
                     break;
             }
 
@@ -225,7 +244,7 @@ namespace Dashboard1
                     break;
             }
 
-            if (counter_interval > 0 && StatusListen == false)
+            if (counter_interval > 0)
             {
 
                 
@@ -234,16 +253,18 @@ namespace Dashboard1
                 if (counter_interval == 0)
                 {
                     MessageBox.Show("All Measurement finish", application_name);
+                    /*
                     if (temp_data_finals_2.Count > 0)
                     {
                         //data_finals_ori.AddRange(temp_data_finals);
 
-                        data_finals_update.AddRange(temp_data_finals_2);
+                        //data_finals_update.AddRange(temp_data_finals_2);
                         data_finals_update_2.AddRange(temp_data_finals_2);
 
                         temp_data_finals_2.Clear();
 
                     }
+                    */
                     //OpenCon_Port_local(mySerialPort, BaudRate);
 
                     //mySerialPort.Close();
@@ -252,10 +273,10 @@ namespace Dashboard1
                 {
                     Task.Delay(delay).ContinueWith(_ =>
                     {
-                        OpenCon_Port_local(mySerialPort, BaudRate);
+                        //OpenCon_Port_local(mySerialPort, BaudRate);
                         Sensor_input_Helper.Command_Write(mySerialPort, ResultGrain);
                         Sensor_input_Helper.Command_Write(mySerialPort, ResultMeasure);
-                        StatusListen = true;
+                        //StatusListen = true;
 
                         MessageBox.Show("Start Next Sequence", application_name);
                     }
@@ -317,6 +338,23 @@ namespace Dashboard1
             NumberGrain = ComboBox_NumberGrain.SelectedIndex;
             NumberMeasure = ComboBox_NumberMeasure.SelectedIndex;
 
+            //TimeInterval = ComboBox_TimeInterval.SelectedIndex;
+            int delay;
+            switch (TimeInterval)
+            {
+                default:
+                    delay = 3000;
+                    break;
+                case 0:
+                    delay = 30000;
+                    break;
+                case 1:
+                    delay = 60000;
+                    break;
+                case 2:
+                    delay = 90000;
+                    break;
+            }
 
             string ResultGrain;
             switch (NumberGrain)
@@ -379,7 +417,29 @@ namespace Dashboard1
                     ResultMeasure = "22094\r";
                     break;
             }
+            //Sensor_input_Helper.Command_Write(mySerialPort, ResultGrain);
+            //Sensor_input_Helper.Command_Write(mySerialPort, ResultMeasure);
 
+            /*
+            while (data_finals_update.Count() <= (JumlahInterval * NumberGrain_Frekuensi) && data_Average.Count() <= JumlahInterval )
+            {
+
+                if (data_finals_update.Count % NumberGrain_Frekuensi == 0 && data_finals_update_2.Count()> 0)
+                {
+                    Task.Delay(delay).ContinueWith(_ =>
+                    {
+                        //OpenCon_Port_local(mySerialPort, BaudRate);
+                        Sensor_input_Helper.Command_Write(mySerialPort, ResultGrain);
+                        Sensor_input_Helper.Command_Write(mySerialPort, ResultMeasure);
+                        StatusListen = true;
+
+                        MessageBox.Show("Start Next Sequence", application_name);
+                    });
+
+                }
+
+            }
+            */
             if (JumlahInterval < 0 || TimeInterval < 0 || NumberGrain < 0 || NumberMeasure < 0)
             {
                 MessageBox.Show("Please fill All mandatory value", application_name);
@@ -414,7 +474,7 @@ namespace Dashboard1
             mySerialPort.Handshake = Handshake.None;
             mySerialPort.RtsEnable = true;
             mySerialPort.ReadBufferSize = 2000000;
-            mySerialPort.Encoding = ASCIIEncoding.ASCII;
+            //mySerialPort.Encoding = ASCIIEncoding.ASCII;
             mySerialPort.Encoding = ASCIIEncoding.UTF8;
 
             mySerialPort.DataReceived += new SerialDataReceivedEventHandler(ProcessSensorData_local);
@@ -426,104 +486,185 @@ namespace Dashboard1
             //Application.Run();
 
         }
+        private List<string> GetWords(string text)
+        {
+            Regex reg = new Regex("[a-zA-Z0-9]");
+            string Word = "";
+            char[] ca = text.ToCharArray();
+            List<string> characters = new List<string>();
+            for (int i = 0; i < ca.Length; i++)
+            {
+                char c = ca[i];
+                if (c > 65535)
+                {
+                    continue;
+                }
+                if (char.IsHighSurrogate(c))
+                {
+                    i++;
+                    characters.Add(new string(new[] { c, ca[i] }));
+                }
+                else
+                {
+                    if (reg.Match(c.ToString()).Success || c.ToString() == "/")
+                    {
+                        Word = Word + c.ToString();
+                        //characters.Add(new string(new[] { c }));
+                    }
+                    else if (c.ToString() == " ")
+                    {
+                        if (Word.Length > 0)
+                            characters.Add(Word);
+                        Word = "";
+                    }
+                    else
+                    {
+                        if (Word.Length > 0)
+                            characters.Add(Word);
+                        Word = "";
+                    }
+
+                }
+
+            }
+            return characters;
+        }
 
         public void ProcessSensorData_local(object sender, SerialDataReceivedEventArgs args)
         {
             try
             {
-                Thread.Sleep(100);// this solves the problem
+                /*
+                 * "\u0002129\u0003A1"
+                 * \u0002128\u0003A0\r\u0002122\u00039A\r
+                 * \u0002129\u0003A1\r\u0002116\u00039D\r
+                 * \u0002125\u00039D\r\u0002123\u00039B"
+                 * 1. Split character by Y
+                 */
+                Thread.Sleep(1000);// this solves the problem
                 byte[] readBuffer = new byte[mySerialPort.ReadBufferSize];
                 int readLen = mySerialPort.Read(readBuffer, 0, readBuffer.Length);
                 string readStr = string.Empty;
 
-                readStr = Encoding.Default.GetString(readBuffer, 0, readLen);
+                readStr = Encoding.UTF8.GetString(readBuffer, 0, readLen);
+                //readStr = Encoding.UTF8.GetString(readBuffer,0,readLen);
                 readStr = readStr.Trim();
-                string[] charactersToReplace = new string[] { @"\t", @"\n", @"\r", " ", "<CR>", "<LF>" };
-                foreach (string s in charactersToReplace)
-                {
-                    readStr = readStr.Replace(s, "");
-                }
-                //readStr = Regex.Replace(readStr, "[^0-9.]", "");
-                readStr = String.Concat(readStr.Substring(0, readStr.Length - 1), ".", readStr.Substring(readStr.Length - 1, 1));
-                //MyString.Substring(MyString.Length-6);
-                //return readStr;number 
+                Console.WriteLine("ReadStr adalah: " + readStr);
 
-                if (readStr != "" && readStr != null && !readStr.Trim().ToLower().Contains("r") && StatusListen == true)
+                char[] delimiter_r = { '\r' };
+                string[] Measures_With_U = readStr.Split(delimiter_r);
+
+                List<string> Measure_Results = new List<string>();
+                List<string> Test_Isengs = new List<string>();
+
+                foreach (var Measure in Measures_With_U)
                 {
-                    if (temp_data_finals_2.Count > 0)
+                    Test_Isengs = GetWords(Measure);
+                    string Result_Parsing = GetWords(Measure).FirstOrDefault();
+                    Console.WriteLine("Result Parsing adalah: " + Result_Parsing);
+                    //Measure_Results.Add(Result_Parsing);
+
+                    string[] charactersToReplace = new string[] { @"\t", @"\n", @"\r", " ", "<CR>", "<LF>" };
+
+                    if (Result_Parsing != "" && Result_Parsing != null)
                     {
-                        //data_finals_ori.AddRange(temp_data_finals);
-
-                        data_finals_update.AddRange(temp_data_finals_2);
-                        data_finals_update_2.AddRange(temp_data_finals_2);
-
-                        temp_data_finals_2.Clear();
-                        Data_Receive_Grid.ItemsSource = data_finals_update;
-                        Data_Receive_Grid.ItemsSource = data_finals_update_2;
+                        foreach (string s in charactersToReplace)
+                        {
+                            Result_Parsing = Result_Parsing.Replace(s, "");
+                        }
                     }
-                    Console.WriteLine("Else if: " + readStr);
 
-                    data_measure_2 data_final_update = new data_measure_2(counter + 1, readStr, (DateTime.Now).ToString());
-                    // data_measure_2 data_final_update2 = new data_measure_2(counter + 1, readStr, (DateTime.Now).ToString());
 
-                    Data_Measure data_final_ori = new Data_Measure(counter + 1, readStr, (DateTime.Now));
+                    if (Result_Parsing != "" && Result_Parsing != null && !Result_Parsing.Trim().ToLower().Contains("r"))
+                    {
 
-                    data_finals_update.Add(data_final_update);
-                    data_finals_update_2.Add(data_final_update);
+                        Console.WriteLine("Nilai Measure adalah: " + Result_Parsing);
+                        
+                        
+                        data_measure_2 data_final_update = new data_measure_2(counter_data + 1, Result_Parsing, (DateTime.Now).ToString());
+                        if (Result_Parsing.Contains("-") || (Result_Parsing.Length) >4)
+                        {
+                            data_Average.Add(data_final_update);
+                        }
+                        else
+                        {
+                            data_finals_update.Add(data_final_update);
+                            data_finals_update_2.Add(data_final_update);
 
-                    data_finals_ori.Add(data_final_ori);
-                    //Data_Receive_Grid.ItemsSource = data_finals_ori;
-                    Application.Current.Dispatcher.Invoke(new Action(() => {
-                        //MessageBox.Show("Port is opened. Start Collecting Data", application_name);
-                        //this.DataContext = this;
-                        Data_Receive_Grid.ItemsSource = data_finals_update;
-                        Data_Receive_Grid.ItemsSource = data_finals_update_2;
+                            //var result = from db.MyTable.Where(d => (double)d.Price >= minValue && (double)d.Price <= maxValue)
 
-                    }));
+                            var data_Grid_1 = data_finals_update.Where(p => p.Id > 0 && p.Id <= 1 * NumberGrain_Frekuensi);
+                            data_Grid_1_list_a = data_Grid_1.ToList();
+                            data_Grid_1_list_b = data_Grid_1.ToList();
+
+                            var data_Grid_2 = data_finals_update.Where(p => p.Id > 1 * NumberGrain_Frekuensi && p.Id <= 2 * NumberGrain_Frekuensi);
+                            data_Grid_2_list_a = data_Grid_2.ToList();
+                            data_Grid_2_list_b = data_Grid_2.ToList();
+
+                            var data_Grid_3 = data_finals_update.Where(p => p.Id > 2 * NumberGrain_Frekuensi && p.Id <= 3 * NumberGrain_Frekuensi);
+                            data_Grid_3_list_a = data_Grid_3.ToList();
+                            data_Grid_3_list_b = data_Grid_3.ToList();
+
+                            var data_Grid_4 = data_finals_update.Where(p => p.Id > 3 * NumberGrain_Frekuensi && p.Id <= 4 * NumberGrain_Frekuensi);
+                            data_Grid_4_list_a = data_Grid_4.ToList();
+                            data_Grid_4_list_b = data_Grid_4.ToList();
+
+                            var data_Grid_5 = data_finals_update.Where(p => p.Id > 4 * NumberGrain_Frekuensi && p.Id <= 5 * NumberGrain_Frekuensi);
+                            data_Grid_5_list_a = data_Grid_5.ToList();
+                            data_Grid_5_list_b = data_Grid_5.ToList();
+
+                            //data_pdfhistories = (data_pdfhistories_var.OrderBy(p => p.Id)).ToList();
+
+                            //data_finals_ori.Add(data_final_ori);
+                            //Data_Receive_Grid.ItemsSource = data_finals_ori;
+                            
+                        }
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            //MessageBox.Show("Port is opened. Start Collecting Data", application_name);
+                            //this.DataContext = this;
+                            Data_Receive_Grid_1.ItemsSource = data_Grid_1_list_a;
+                            Data_Receive_Grid_1.ItemsSource = data_Grid_1_list_b;
+
+                            Data_Receive_Grid_2.ItemsSource = data_Grid_2_list_a;
+                            Data_Receive_Grid_2.ItemsSource = data_Grid_2_list_b;
+
+                            Data_Receive_Grid_3.ItemsSource = data_Grid_3_list_a;
+                            Data_Receive_Grid_3.ItemsSource = data_Grid_3_list_b;
+
+                            //var x = data_Average[0] != null ? 12 : (int?)null;
+                            //if (val % 2 == 1) { output = “Number is odd”; } else { output = “Number is even”; }
+                            if (data_Average.Count() == 1) { Average_1.Text = data_Average[0].Measures; } else {; }
+                            if (data_Average.Count() == 2) { Average_2.Text = data_Average[1].Measures; } else {; }
+                            if (data_Average.Count() == 3) { Average_3.Text = data_Average[2].Measures; } else {; }
+                            if (data_Average.Count() == 4) { Average_4.Text = data_Average[3].Measures; } else {; }
+
+                        }));
+                        counter_data = counter_data + 1;
+                    }
+
+                    
+                    else if (data_finals_update.Count % NumberGrain_Frekuensi == 0 && data_finals_update.Count > 0)
+                    {
+                        Sensor_input_Helper.Command_MoisturAggregate(mySerialPort);
+                        //mySerialPort.Close();
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            //MessageBox.Show("Port is opened. Start Collecting Data", application_name);
+                            //this.DataContext = this;
+                            RunSensor();
+                        }));
+                        
+                        Console.WriteLine("Nilai Else If adalah: " + Result_Parsing);
+                    }
+                    
+                    else
+                    {
+                        Console.WriteLine("Nilai Else adalah: " + Result_Parsing);
+                    }
 
 
                 }
-                else if (readStr.Trim().ToLower().Contains("r") && data_finals_update.Count() > 0 && StatusListen == true)//&& data_finals_ori.Count() % NumberGrain_Frekuensi == 0
-                {
-
-                    Sensor_input_Helper.Command_MoisturAggregate(mySerialPort);
-                    Thread.Sleep(3000);
-
-                    mySerialPort.Close();
-
-                    //temp_data_finals = data_finals_ori.;
-                    temp_data_finals_2.AddRange(data_finals_update);
-
-
-                    data_finals_ori.Clear();
-                    data_finals_update.Clear();
-                    data_finals_update_2.Clear();
-
-                    Console.WriteLine("Else if: " + readStr);
-
-                    StatusListen = false;
-
-                    Application.Current.Dispatcher.Invoke(new Action(() => {
-                        MessageBox.Show("please wait for interval", application_name);
-                        //mySerialPort.DataReceived -= ProcessSensorData_local;
-                        //mySerialPort.DataReceived = null;
-
-
-                        RunSensor();
-                        //mySerialPort.DiscardOutBuffer();
-                        //mySerialPort.DiscardInBuffer();
-
-                        //mySerialPort.DataReceived += new SerialDataReceivedEventHandler(ProcessSensorData_local);
-
-                    }));
-
-                }
-                else
-                {
-                    Console.WriteLine("Else: " + readStr);
-
-                }
-
             }
             catch (Exception ex)
             {
@@ -553,7 +694,7 @@ namespace Dashboard1
 
         private void btn_GridPrint_click(object sender, RoutedEventArgs e)
         {
-            Data_Receive_Grid.ItemsSource = data_finals_ori;
+            //Data_Receive_Grid.ItemsSource = data_finals_ori;
 
         }
     }
