@@ -418,8 +418,8 @@ namespace Dashboard1
                     ResultMeasure = "22094\r";
                     break;
             }
-            Sensor_input_Helper.Command_Write(mySerialPort, ResultGrain);
-            Sensor_input_Helper.Command_Write(mySerialPort, ResultMeasure);
+            //Sensor_input_Helper.Command_Write(mySerialPort, ResultGrain);
+            //Sensor_input_Helper.Command_Write(mySerialPort, ResultMeasure);
 
             if (JumlahInterval < 0 || TimeInterval < 0 || NumberGrain < 0 || NumberMeasure < 0)
             {
@@ -440,7 +440,7 @@ namespace Dashboard1
                 Sensor_input_Helper.Command_Write(mySerialPort, ResultMeasure);
                 MessageBox.Show("Sensor Start Collecting Data", application_name);
 
-                StatusListen = true;
+                //StatusListen = true;
             }
             //RunSensor();
 
@@ -693,7 +693,37 @@ namespace Dashboard1
         private void Button1_Baiz_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("start baiz waiting", application_name);
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(25) };
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+            timer.Start();
+            timer.Tick += (sender2, args) =>
+            {
+                timer.Stop();
+                Sensor_input_Helper.Command_Check(mySerialPort);
+            };
+            timer.Start();
+            timer.Tick += (sender2, args) =>
+            {
+                timer.Stop();
+                Sensor_input_Helper.Command_Check(mySerialPort);
+            };
+            timer.Start();
+            timer.Tick += (sender2, args) =>
+            {
+                timer.Stop();
+                Sensor_input_Helper.Command_Check(mySerialPort);
+            };
+            timer.Start();
+            timer.Tick += (sender2, args) =>
+            {
+                timer.Stop();
+                Sensor_input_Helper.Command_Check(mySerialPort);
+            };
+            timer.Start();
+            timer.Tick += (sender2, args) =>
+            {
+                timer.Stop();
+                Sensor_input_Helper.Command_Check(mySerialPort);
+            };
             timer.Start();
             timer.Tick += (sender2, args) =>
             {
@@ -708,13 +738,22 @@ namespace Dashboard1
         {
             //tbkLabel.Text = "two seconds delay";
             MessageBox.Show("start baiz waiting", application_name);
-            Task.Delay(25000).ContinueWith(_ =>
+            
+            //var page = new Page2();
+            //page.Show();
+
+            Task.Delay(10000).ContinueWith(_ =>
             {
-                Sensor_input_Helper.Command_Check(mySerialPort);
-                Sensor_input_Helper.Command_CheckData(mySerialPort);
-                MessageBox.Show("Finsih baiz 2 waiting", application_name);
-                //var page = new Page2();
-                //page.Show();
+                Task.Delay(10000).ContinueWith(_ =>
+                {
+                    Task.Delay(10000).ContinueWith(_ =>
+                    {
+                        Sensor_input_Helper.Command_Check(mySerialPort);
+                        Sensor_input_Helper.Command_CheckData(mySerialPort);
+                        MessageBox.Show("Finsih baiz 2 waiting", application_name);
+                    });
+
+                });
             }
             );
         }
@@ -729,7 +768,13 @@ namespace Dashboard1
         private async void Button4_Baiz_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("start baiz waiting", application_name);
-            await Task.Delay(25000);
+            await Task.Delay(5000);
+            await Task.Delay(5000);
+            await Task.Delay(5000);
+            await Task.Delay(5000);
+            await Task.Delay(5000);
+            await Task.Delay(5000);
+
             Sensor_input_Helper.Command_Check(mySerialPort);
             Sensor_input_Helper.Command_CheckData(mySerialPort);
             MessageBox.Show("Finsih baiz 4 waiting", application_name);
@@ -739,7 +784,17 @@ namespace Dashboard1
         {
             //tbkLabel.Text = "thirty seconds delay";
 
-            await Task.Delay(25000);
+            await Task.Delay(5000);
+            Sensor_input_Helper.Command_CheckData(mySerialPort);
+
+            await Task.Delay(5000);
+            Sensor_input_Helper.Command_CheckData(mySerialPort);
+            await Task.Delay(5000);
+            Sensor_input_Helper.Command_CheckData(mySerialPort);
+            await Task.Delay(5000);
+            Sensor_input_Helper.Command_CheckData(mySerialPort);
+            await Task.Delay(5000);
+            await Task.Delay(5000);
             Sensor_input_Helper.Command_Check(mySerialPort);
             Sensor_input_Helper.Command_CheckData(mySerialPort);
             //var page = new Page2();
